@@ -14,7 +14,7 @@ parser.add_argument("-v", "--verbose", type=str, help="Print current HTTP reques
 parser.add_argument("-o", "--out", type=str, help="Directory to store output in", required=True, metavar='')
 parser.add_argument("-H", "--header", type=str, help="HTTP headers to send in the request (key: value) - Multiple uses are allowed", action="append", metavar='')
 parser.add_argument("-t", "--threads", type=int, help="Threads - Default 10", metavar='', default=10)
-parser.add_argument("-f", "--file", type=str, help="File containing list of URLs to fetch", metavar='')
+parser.add_argument("-f", "--file", type=str, help="File containing list of URLs to fetch", required=True, metavar='')
 
 # Parse command line
 args         = parser.parse_args()
@@ -56,7 +56,7 @@ def write_to_output_file(file_name, url, response_size, status, data):
 	with open(output_dir + "/" + file_name + "-" + response_size + "-" + status + ".html", "w") as f:
 		f.write("# URL: " + url + "\n")
 		f.write("# FILE: " + file_name + "\n")
-		f.write("# STATUS" + status + "\n# \n")
+		f.write("# STATUS: " + status + "\n# \n")
 		f.write(data)
 
 """
@@ -88,6 +88,9 @@ def main():
 	except:
 		print("[+] Output directory exists: %s" % output_dir)
 
+	print("[+] Threads: %s" % thread_count)
+	print("[+] Headers: %s" % user_header)
+	print("----------------------------------------------------------------------")
 	print("\tTarget\t|\tResponse Size\t|\tStatus")
 	print("----------------------------------------------------------------------")
 
