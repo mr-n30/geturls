@@ -54,9 +54,10 @@ Open and write to output file
 """
 def write_to_output_file(file_name, url, response_size, status, data):
 	with open(output_dir + "/" + file_name + "-" + response_size + "-" + status + ".html", "w") as f:
-		f.write("# URL: " + url + "\n")
-		f.write("# FILE: " + file_name + "\n")
-		f.write("# STATUS: " + status + "\n# \n")
+		f.write("# URL: " + url + "\r\n")
+		f.write("# FILE: " + file_name + "\r\n")
+		f.write("# STATUS: " + status + "\r\n")
+		f.write("#\r\n\r\n")
 		f.write(data)
 
 """
@@ -64,18 +65,25 @@ GET URLs
 """
 def get_url(url):
 	try:
-		r1 = requests.get("http://" + url, timeout=0.500, headers=headers, verify=False)
-		r2 = requests.get("https://" + url, timeout=0.500, headers=headers, verify=False)
+		r1 = requests.get("http://" + url + "/", timeout=0.500, headers=headers, verify=False)
+		r2 = requests.get("https://" + url + "/", timeout=0.500, headers=headers, verify=False)
+
+	    # Check if verbose flag is set
 		if args.verbose:
-				print("[+] Trying:\t%s\t%d\t%d" % (url, len(r.text), r.status_code))
-		if r1.status_code == 200 or r1.status_code == 301 or r1.status_code == 302:
-				print("[+] %s\t%d\t%d" % (url, len(r1.text), r1.status_code))
-		if r2.status_code == 200 or r2.status_code == 301 or r2.status_code == 302:
-				print("[+] %s\t%d\t%d" % (url, len(r2.text), r2.status_code))
-		file_name_1 = rand_char_gen()
-		file_name_2 = rand_char_gen()
-		write_to_output_file(file_name_1, url, str(len(r1.text)), str(r1.status_code), r1.text)
-		write_to_output_file(file_name_2, url, str(len(r2.text)), str(r2.status_code), r2.text)
+			print("[+] Trying:\t%s\t%d\t%d" % (url, len(r.text), r.status_code))
+
+		if r1:
+			if r1.status_code == 200 or r1.status_code == 301 or r1.status_code == 302 or r1.status_code == 404:
+				print("[+] http://%s/\t%d\t%d" % (url, len(r1.text), r1.status_code))
+				file_name_1 = rand_char_gen()
+				write_to_output_file(file_name_1, url, str(len(r1.text)), str(r1.status_code), r1.text)
+		if r2:
+			if r2.status_code == 200 or r2.status_code == 301 or r2.status_code == 302 or r2.status_code == 404:
+				print("[+] https://%s/\t%d\t%d" % (url, len(r2.text), r2.status_code))
+				file_name_2 = rand_char_gen()
+				write_to_output_file(file_name_2, url, str(len(r2.text)), str(r2.status_code), r2.text)
+
+	# Handle exceptions
 	except requests.exceptions.Timeout:
 		pass
 	except requests.exceptions.ConnectionError:
