@@ -73,22 +73,22 @@ def get_url(url):
 			print("[+] Trying:\t%s\t%d\t%d" % (url, len(r.text), r.status_code))
 
 		if r1:
-			print("[+] %d\thttp://%s/\t%d" % (r1.status_code, url, len(r1.text)))
+			print("[+] %d\t%d\thttp://%s/" % (r1.status_code, len(r1.text), url,))
 			file_name_1 = rand_char_gen()
 			write_to_output_file(file_name_1, url, str(len(r1.text)), str(r1.status_code), r1.text)
 		else:
 			if r1.status_code == 301 or r1.status_code == 302 or r1.status_code == 404:
-				print("[+] %d\thttp://%s/\t%d" % (r1.status_code, url, len(r1.text)))
+				print("[+] %d\t%d\thttp://%s/" % (r1.status_code, len(r1.text), url,))
 			file_name_1 = rand_char_gen()
 			write_to_output_file(file_name_1, url, str(len(r1.text)), str(r1.status_code), r1.text)
 
 		if r2:
-			print("[+] %d\thttps://%s/\t%d" % (r2.status_code, url, len(r2.text)))
+			print("[+] %d\t%d\thttp://%s/" % (r2.status_code, len(r2.text), url,))
 			file_name_2 = rand_char_gen()
 			write_to_output_file(file_name_2, url, str(len(r2.text)), str(r2.status_code), r2.text)
 		else:
 			if r2.status_code == 301 or r2.status_code == 302 or r2.status_code == 404:
-				print("[+] %d\thttps://%s/\t%d" % (r2.status_code, url, len(r2.text)))
+				print("[+] %d\t%d\thttp://%s/" % (r2.status_code, len(r2.text), url,))
 			file_name_2 = rand_char_gen()
 			write_to_output_file(file_name_2, url, str(len(r2.text)), str(r2.status_code), r2.text)
 
@@ -113,7 +113,7 @@ def main():
 	print("[+] Threads: %s" % thread_count)
 	print("[+] Headers: %s" % user_header)
 	print("----------------------------------------------------------------------")
-	print("    Status    |    Target    |    Response Size")
+	print("    Status Code    |    Response Size    |    Target URL")
 	print("----------------------------------------------------------------------")
 
 	try:
