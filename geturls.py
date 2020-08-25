@@ -104,7 +104,7 @@ def main():
 	print("[+] Threads: %s" % thread_count)
 	print("[+] Headers: %s" % user_header)
 	print("----------------------------------------------------------------------")
-	print("Status\t|\tTarget\t|\tResponse Size")
+	print("    Status    |    Target    |    Response Size")
 	print("----------------------------------------------------------------------")
 
 	try:
