@@ -54,10 +54,10 @@ Open and write to output file
 """
 def write_to_output_file(file_name, url, response_size, status, data):
 	with open(output_dir + "/" + file_name + "-" + response_size + "-" + status + ".html", "w") as f:
-		f.write("# URL: " + url + "\r\n")
-		f.write("# FILE: " + file_name + "\r\n")
-		f.write("# STATUS: " + status + "\r\n")
-		f.write("#\r\n\r\n")
+		f.write("# URL: " + url + "\n")
+		f.write("# FILE: " + file_name + "\n")
+		f.write("# STATUS: " + status + "\n")
+		f.write("# \n\n")
 		f.write(data)
 
 """
