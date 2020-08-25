@@ -64,7 +64,8 @@ GET URLs
 """
 def get_url(url):
 	try:
-		r = requests.get(url, timeout=0.500, headers=headers, verify=False)
+		r = requests.get("http://" + url, timeout=0.500, headers=headers, verify=False)
+		r = requests.get("https://" + url, timeout=0.500, headers=headers, verify=False)
 		if args.verbose:
 				print("[+] Trying:\t%s\t%d\t%d" % (url, len(r.text), r.status_code))
 		if r.status_code == 200 or r.status_code == 301 or r.status_code == 302:
