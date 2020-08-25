@@ -74,12 +74,12 @@ def get_url(url):
 
 		if r1:
 			if r1.status_code == 200 or r1.status_code == 301 or r1.status_code == 302 or r1.status_code == 404:
-				print("[+] http://%s/\t%d\t%d" % (url, len(r1.text), r1.status_code))
+				print("[+] %d\thttp://%s/\t%d" % (r1.status_code, url, len(r1.text)))
 				file_name_1 = rand_char_gen()
 				write_to_output_file(file_name_1, url, str(len(r1.text)), str(r1.status_code), r1.text)
 		if r2:
 			if r2.status_code == 200 or r2.status_code == 301 or r2.status_code == 302 or r2.status_code == 404:
-				print("[+] https://%s/\t%d\t%d" % (url, len(r2.text), r2.status_code))
+				print("[+] %d\thttps://%s/\t%d" % (r2.status_code, url, len(r2.text)))
 				file_name_2 = rand_char_gen()
 				write_to_output_file(file_name_2, url, str(len(r2.text)), str(r2.status_code), r2.text)
 
@@ -104,7 +104,7 @@ def main():
 	print("[+] Threads: %s" % thread_count)
 	print("[+] Headers: %s" % user_header)
 	print("----------------------------------------------------------------------")
-	print("\tTarget\t|\tResponse Size\t|\tStatus")
+	print("Status\t|\tTarget\t|\tResponse Size")
 	print("----------------------------------------------------------------------")
 
 	try:
