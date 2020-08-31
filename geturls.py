@@ -73,7 +73,9 @@ def get_urls_nmap(url):
 	try:
 		r = requests.get(url, timeout=timeout, headers=headers, verify=False)
 		if args.verbose:
-			print("[+] Trying: %d\t%d\t%s" % (r.status_code, len(r.text), url,))
+			print("[+] Trying: %d\t%d\t%s" % (r.status_code, len(r.text), url))
+		if r.status_code == 200:
+			print("[+] %d\t%d\t%s" % (r.status_code, len(r.text), url))
 		file_name = rand_char_gen()
 		write_to_output_file(file_name, url + "/", str(len(r.text)), str(r.status_code), r.text)
 
@@ -98,12 +100,12 @@ def get_urls_basic(url):
 			print("[+] Trying:\t%s\t%d\t%d" % (url, len(r.text), r.status_code))
 
 		if r1:
-			print("[+] %d\t%d\thttp://%s/" % (r1.status_code, len(r1.text), url,))
+			print("[+] %d\t%d\thttp://%s/" % (r1.status_code, len(r1.text), url))
 			file_name_1 = rand_char_gen()
 			write_to_output_file(file_name_1, url, str(len(r1.text)), str(r1.status_code), r1.text)
 		else:
 			if r1.status_code == 301 or r1.status_code == 302 or r1.status_code == 404:
-				print("[+] %d\t%d\thttp://%s/" % (r1.status_code, len(r1.text), url,))
+				print("[+] %d\t%d\thttp://%s/" % (r1.status_code, len(r1.text), url))
 			file_name_1 = rand_char_gen()
 			write_to_output_file(file_name_1, url, str(len(r1.text)), str(r1.status_code), r1.text)
 
@@ -113,7 +115,7 @@ def get_urls_basic(url):
 			write_to_output_file(file_name_2, url, str(len(r2.text)), str(r2.status_code), r2.text)
 		else:
 			if r2.status_code == 301 or r2.status_code == 302 or r2.status_code == 404:
-				print("[+] %d\t%d\thttp://%s/" % (r2.status_code, len(r2.text), url,))
+				print("[+] %d\t%d\thttp://%s/" % (r2.status_code, len(r2.text), url))
 			file_name_2 = rand_char_gen()
 			write_to_output_file(file_name_2, url, str(len(r2.text)), str(r2.status_code), r2.text)
 
