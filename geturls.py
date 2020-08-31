@@ -14,7 +14,7 @@ parser.add_argument("-v", "--verbose", type=str, help="Print current HTTP reques
 parser.add_argument("-H", "--header", type=str, help="HTTP headers to send in the request (key: value) - Multiple uses are allowed", action="append")
 parser.add_argument("-t", "--threads", type=int, help="Threads (Default 10)", default=10)
 parser.add_argument("--timeout", type=int, help="This tells the program how long to wait for a response from the server", default=1)
-parser.add_argument("-n", "--nmap", type=str, help="Nmap XML scan file")
+parser.add_argument("-n", "--nmap", type=str, help="Nmap XML scan file", metavar="FILE")
 parser.add_argument("-o", "--out", type=str, help="Directory to store output in")
 parser.add_argument("-f", "--file", type=str, help="File containing URLs to fetch")
 
@@ -127,42 +127,75 @@ def get_urls_basic(url):
 Main
 """
 def main():
-	try:
-		print("[+] Creating output directory: %s" % output_dir)
-		os.mkdir(output_dir)
-	except:
-		print("[+] Output directory exists: %s" % output_dir)
+	if args.out:
+		try:
+			print("[+] Creating output directory: %s" % output_dir)
+			os.mkdir(output_dir)
+		except:
+			print("[+] Output directory exists: %s" % output_dir)
 
-	print("[+] Threads: %s" % thread_count)
-	print("[+] Headers: %s" % user_header)
+	print(r"""
+ _____ _____ _____  _     ____  _     ____ 
+/  __//  __//__ __\/ \ /\/  __\/ \   / ___\
+| |  _|  \    / \  | | |||  \/|| |   |    \
+| |_//|  /_   | |  | \_/||    /| |_/\\___ |
+\____\\____\  \_/  \____/\_/\_\\____/\____/
+                                           
+""")
+	print(f"[+] Threads: {thread_count}")
+	print(f"[+] Headers: {user_header}")
+	print(f"[+] Timeout: {timeout}")
 	print("----------------------------------------------------------------------")
 	print("    Status Code    |    Response Size    |    Target URL")
 	print("----------------------------------------------------------------------")
 
 	if args.nmap:
+		url = []
+		in_file_nmap = args.nmap
+		tree 		 = ET.parse(in_file)
+		root 		 = tree.getroot()
+		for x in root:
+			for y in x:
+				for z in y:
+					if z.tag == "hostname":
+						host = z.attrib["name"]
+					if z.tag == "port":
+						port = z.attrib["portid"]
+						if port == "80":
+							url.append("http://" + host + ":" + port + "/").strip()
+						elif port == "443":
+							url.append("https://" + host + ":" + port + "/").strip()
+						else:
+							url.append("http://" + host + ":" + port + "/").strip()
 		try:
-		  with open(in_file, "r") as url_file:
-		    urls = url_file.readlines()
-		    url = [i.strip() for i in urls]
-		  with Pool(thread_count) as pool:
-		    results = pool.map(get_urls_nmap, url)
-		    success = list(filter(None, results))
+			with Pool(thread_count) as pool:
+				results = pool.map(get_urls_nmap, url)
+				success = list(filter(None, results))
 		except KeyboardInterrupt:
-		  print("[+] Exiting program...")
-		  time.sleep(3)
+			print("[+] Exiting program...")
+			time.sleep(3)
+
+
+	elif args.file:
+		try:
+			with open(in_file, "r") as url_file:
+				urls = url_file.readlines()
+				url  = [i.strip() for i in urls]
+				print(f"[DEBUG] {type(url)}")
+			with Pool(thread_count) as pool:
+				results = pool.map(get_urls_basic, url)
+				success = list(filter(None, results))
+		except KeyboardInterrupt:
+			print("[+] Exiting program...")
+			time.sleep(3)
+
 	else:
-		try:
-		  with open(in_file, "r") as url_file:
-		    urls = url_file.readlines()
-		    url = [i.strip() for i in urls]
-		  with Pool(thread_count) as pool:
-		    results = pool.map(get_urls_basic, url)
-		    success = list(filter(None, results))
-		except KeyboardInterrupt:
-		  print("[+] Exiting program...")
-		  time.sleep(3)
+		print("[!] You must specify either -f or --nmap")
+		return 1
 
 	print("[+] DONE: Output saved in: %s" % output_dir)
+
+	return 0
 
 if __name__ == "__main__":
 	main()
