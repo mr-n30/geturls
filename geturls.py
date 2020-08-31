@@ -8,6 +8,7 @@ import urllib3
 import requests
 import argparse
 from multiprocessing import Pool
+import xml.etree.ElementTree as ET
 
 # Add arguments
 parser = argparse.ArgumentParser(description="A Python script to request multiple URLs from a file and store each response in a different file")
