@@ -10,14 +10,17 @@ from multiprocessing import Pool
 
 # Add arguments
 parser = argparse.ArgumentParser(description="A Python script to request multiple URLs from a file and store each response in a different file")
-parser.add_argument("-v", "--verbose", type=str, help="Print current HTTP request and response status code", metavar='')
-parser.add_argument("-o", "--out", type=str, help="Directory to store output in", required=True, metavar='')
-parser.add_argument("-H", "--header", type=str, help="HTTP headers to send in the request (key: value) - Multiple uses are allowed", action="append", metavar='')
-parser.add_argument("-t", "--threads", type=int, help="Threads (Default 10)", metavar='', default=10)
-parser.add_argument("-f", "--file", type=str, help="File containing URLs to fetch", required=True, metavar='')
+parser.add_argument("-v", "--verbose", type=str, help="Print current HTTP request and response status code")
+parser.add_argument("-H", "--header", type=str, help="HTTP headers to send in the request (key: value) - Multiple uses are allowed", action="append")
+parser.add_argument("-t", "--threads", type=int, help="Threads (Default 10)", default=10)
+parser.add_argument("--timeout", type=int, help="This tells the program how long to wait for a response from the server", default=1)
+parser.add_argument("-n", "--nmap", type=str, help="Nmap XML scan file")
+parser.add_argument("-o", "--out", type=str, help="Directory to store output in")
+parser.add_argument("-f", "--file", type=str, help="File containing URLs to fetch")
 
 # Parse command line
 args         = parser.parse_args()
+nmap         = args.nmap
 in_file      = args.file
 output_dir   = args.out
 verbosity    = args.verbose
@@ -61,9 +64,28 @@ def write_to_output_file(file_name, url, response_size, status, data):
 		f.write(data)
 
 """
-GET URLs
+GET URLs Nmap
 """
-def get_url(url):
+def get_urls_nmap(url):
+	try:
+		r = requests.get(url, timeout=1, headers=headers, verify=False)
+		if args.verbose:
+			print("[+] Trying: %d\t%d\thttp://%s/" % (r.status_code, len(r.text), url,))
+		file_name = rand_char_gen()
+		write_to_output_file(file_name, url, str(len(r.text)), str(r.status_code), r.text)
+
+	# Handle exceptions
+	except requests.exceptions.Timeout:
+		pass
+	except requests.exceptions.ConnectionError:
+		pass
+	except Exception as e:
+		print(e)
+
+"""
+GET URLs basic
+"""
+def get_urls_basic(url):
 	try:
 		r1 = requests.get("http://" + url + "/", timeout=0.500, headers=headers, verify=False)
 		r2 = requests.get("https://" + url + "/", timeout=0.500, headers=headers, verify=False)
@@ -116,16 +138,28 @@ def main():
 	print("    Status Code    |    Response Size    |    Target URL")
 	print("----------------------------------------------------------------------")
 
-	try:
-		with open(in_file, "r") as url_file:
-			urls = url_file.readlines()
-			url = [i.strip() for i in urls]
-		with Pool(thread_count) as pool:
-			results = pool.map(get_url, url)
-			success = list(filter(None, results))
-	except KeyboardInterrupt:
-		print("[+] Exiting program...")
-		time.sleep(3)
+	if args.nmap:
+		try:
+		  with open(in_file, "r") as url_file:
+		    urls = url_file.readlines()
+		    url = [i.strip() for i in urls]
+		  with Pool(thread_count) as pool:
+		    results = pool.map(get_urls_nmap, url)
+		    success = list(filter(None, results))
+		except KeyboardInterrupt:
+		  print("[+] Exiting program...")
+		  time.sleep(3)
+	else:
+		try:
+		  with open(in_file, "r") as url_file:
+		    urls = url_file.readlines()
+		    url = [i.strip() for i in urls]
+		  with Pool(thread_count) as pool:
+		    results = pool.map(get_urls_basic, url)
+		    success = list(filter(None, results))
+		except KeyboardInterrupt:
+		  print("[+] Exiting program...")
+		  time.sleep(3)
 
 	print("[+] DONE: Output saved in: %s" % output_dir)
 
