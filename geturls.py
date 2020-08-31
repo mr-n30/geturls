@@ -21,6 +21,7 @@ parser.add_argument("-f", "--file", type=str, help="File containing URLs to fetc
 # Parse command line
 args         = parser.parse_args()
 nmap         = args.nmap
+timeout      = args.timeout
 in_file      = args.file
 output_dir   = args.out
 verbosity    = args.verbose
@@ -68,7 +69,7 @@ GET URLs Nmap
 """
 def get_urls_nmap(url):
 	try:
-		r = requests.get(url, timeout=1, headers=headers, verify=False)
+		r = requests.get(url, timeout=timeout headers=headers, verify=False)
 		if args.verbose:
 			print("[+] Trying: %d\t%d\thttp://%s/" % (r.status_code, len(r.text), url,))
 		file_name = rand_char_gen()
@@ -87,8 +88,8 @@ GET URLs basic
 """
 def get_urls_basic(url):
 	try:
-		r1 = requests.get("http://" + url + "/", timeout=0.500, headers=headers, verify=False)
-		r2 = requests.get("https://" + url + "/", timeout=0.500, headers=headers, verify=False)
+		r1 = requests.get("http://" + url + "/", timeout=timeout, headers=headers, verify=False)
+		r2 = requests.get("https://" + url + "/", timeout=timeout, headers=headers, verify=False)
 
 	    # Check if verbose flag is set
 		if args.verbose:
