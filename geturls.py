@@ -165,11 +165,11 @@ def main():
 					if z.tag == "port":
 						port = z.attrib["portid"]
 						if port == "80":
-							url.append("http://" + host + ":" + port + "/").strip()
+							url.append("http://" + host + ":" + port)
 						elif port == "443":
-							url.append("https://" + host + ":" + port + "/").strip()
+							url.append("https://" + host + ":" + port)
 						else:
-							url.append("http://" + host + ":" + port + "/").strip()
+							url.append("http://" + host + ":" + port)
 		try:
 			with Pool(thread_count) as pool:
 				results = pool.map(get_urls_nmap, url)
