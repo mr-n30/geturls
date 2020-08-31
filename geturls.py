@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import sys
 import time
 import string
 import random
@@ -15,18 +16,18 @@ parser.add_argument("-H", "--header", type=str, help="HTTP headers to send in th
 parser.add_argument("-t", "--threads", type=int, help="Threads (Default 10)", default=10)
 parser.add_argument("--timeout", type=int, help="This tells the program how long to wait for a response from the server", default=1)
 parser.add_argument("-n", "--nmap", type=str, help="Nmap XML scan file", metavar="FILE")
-parser.add_argument("-o", "--out", type=str, help="Directory to store output in")
+parser.add_argument("-o", "--out", type=str, help="Directory to store output in", default=".geturls/")
 parser.add_argument("-f", "--file", type=str, help="File containing URLs to fetch")
 
 # Parse command line
 args         = parser.parse_args()
-nmap         = args.nmap
 timeout      = args.timeout
 in_file      = args.file
 output_dir   = args.out
 verbosity    = args.verbose
 user_header  = args.header
 thread_count = args.threads
+in_file_nmap = args.nmap
 
 # Disable insecure request warnings
 urllib3.disable_warnings(urllib3.connection.HTTPConnection)
@@ -142,6 +143,7 @@ def main():
 \____\\____\  \_/  \____/\_/\_\\____/\____/
                                            
 """)
+	print(f"[+] Output: {output_dir}")
 	print(f"[+] Threads: {thread_count}")
 	print(f"[+] Headers: {user_header}")
 	print(f"[+] Timeout: {timeout}")
@@ -152,7 +154,7 @@ def main():
 	if args.nmap:
 		url = []
 		in_file_nmap = args.nmap
-		tree 		 = ET.parse(in_file)
+		tree 		 = ET.parse(in_file_nmap)
 		root 		 = tree.getroot()
 		for x in root:
 			for y in x:
@@ -174,6 +176,7 @@ def main():
 		except KeyboardInterrupt:
 			print("[+] Exiting program...")
 			time.sleep(3)
+			sys.exit(1)
 
 
 	elif args.file:
@@ -188,12 +191,13 @@ def main():
 		except KeyboardInterrupt:
 			print("[+] Exiting program...")
 			time.sleep(3)
+			sys.exit(1)
 
 	else:
 		print("[!] You must specify either -f or --nmap")
-		return 1
+		sys.exit(1)
 
-	print("[+] DONE: Output saved in: %s" % output_dir)
+	print(f"[+] Output saved in: {output_dir}")
 
 	return 0
 
