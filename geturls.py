@@ -12,7 +12,7 @@ import xml.etree.ElementTree as ET
 
 # Add arguments
 parser = argparse.ArgumentParser(description="A Python script to request multiple URLs from a file and store each response in a different file")
-parser.add_argument("-v", "--verbose", type=str, help="Print current HTTP request and response status code")
+parser.add_argument("-v", "--verbose", type=int, help="Print current HTTP request and response status code", default=1)
 parser.add_argument("-H", "--header", type=str, help="HTTP headers to send in the request (key: value) - Multiple uses are allowed", action="append")
 parser.add_argument("-t", "--threads", type=int, help="Threads (Default 10)", default=10)
 parser.add_argument("--timeout", type=int, help="This tells the program how long to wait for a response from the server", default=1)
