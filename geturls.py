@@ -12,7 +12,7 @@ import xml.etree.ElementTree as ET
 
 # Add arguments
 parser = argparse.ArgumentParser(description="A Python script to request multiple URLs from a file and store each response in a different file")
-parser.add_argument("-v", "--verbose", type=int, help="Print current HTTP request and response status code", default=1)
+parser.add_argument("-v", "--verbose", action="store_true", help="Print current HTTP request and response status code")
 parser.add_argument("-H", "--header", type=str, help="HTTP headers to send in the request (key: value) - Multiple uses are allowed", action="append")
 parser.add_argument("-t", "--threads", type=int, help="Threads (Default 10)", default=10)
 parser.add_argument("--timeout", type=int, help="This tells the program how long to wait for a response from the server", default=1)
@@ -137,12 +137,12 @@ def main():
 			print("[+] Output directory exists: %s" % output_dir)
 
 	print(r"""
- _____ _____ _____  _     ____  _     ____ 
+ _____ _____ _____  _     ____  _     ____
 /  __//  __//__ __\/ \ /\/  __\/ \   / ___\
 | |  _|  \    / \  | | |||  \/|| |   |    \
 | |_//|  /_   | |  | \_/||    /| |_/\\___ |
 \____\\____\  \_/  \____/\_/\_\\____/\____/
-                                           
+
 """)
 	print(f"[+] Output: {output_dir}")
 	print(f"[+] Threads: {thread_count}")
@@ -185,7 +185,6 @@ def main():
 			with open(in_file, "r") as url_file:
 				urls = url_file.readlines()
 				url  = [i.strip() for i in urls]
-				print(f"[DEBUG] {type(url)}")
 			with Pool(thread_count) as pool:
 				results = pool.map(get_urls_basic, url)
 				success = list(filter(None, results))
