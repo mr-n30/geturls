@@ -73,9 +73,9 @@ def get_urls_nmap(url):
 	try:
 		r = requests.get(url, timeout=timeout, headers=headers, verify=False)
 		if args.verbose:
-			print("[+] Trying: %d\t%d\thttp://%s/" % (r.status_code, len(r.text), url,))
+			print("[+] Trying: %d\t%d\t%s" % (r.status_code, len(r.text), url,))
 		file_name = rand_char_gen()
-		write_to_output_file(file_name, url, str(len(r.text)), str(r.status_code), r.text)
+		write_to_output_file(file_name, url + "/", str(len(r.text)), str(r.status_code), r.text)
 
 	# Handle exceptions
 	except requests.exceptions.Timeout:
