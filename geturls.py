@@ -69,7 +69,7 @@ GET URLs Nmap
 """
 def get_urls_nmap(url):
 	try:
-		r = requests.get(url, timeout=timeout headers=headers, verify=False)
+		r = requests.get(url, timeout=timeout, headers=headers, verify=False)
 		if args.verbose:
 			print("[+] Trying: %d\t%d\thttp://%s/" % (r.status_code, len(r.text), url,))
 		file_name = rand_char_gen()
