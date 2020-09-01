@@ -73,9 +73,9 @@ def get_urls_nmap(url):
 	try:
 		r = requests.get(url, timeout=timeout, headers=headers, verify=False)
 		if args.verbose:
-			print("[+] Trying: %d\t%d\t%s" % (r.status_code, len(r.text), url))
-		if r.status_code == 200:
-			print("[+] %d\t%d\t%s" % (r.status_code, len(r.text), url))
+			print("[+] %d\t%d\t%s/" % (r.status_code, len(r.text), url))
+		elif r.status_code == 200:
+			print("[+] %d\t%d\t%s/" % (r.status_code, len(r.text), url))
 		file_name = rand_char_gen()
 		write_to_output_file(file_name, url + "/", str(len(r.text)), str(r.status_code), r.text)
 
@@ -95,9 +95,9 @@ def get_urls_basic(url):
 		r1 = requests.get("http://" + url + "/", timeout=timeout, headers=headers, verify=False)
 		r2 = requests.get("https://" + url + "/", timeout=timeout, headers=headers, verify=False)
 
-	    # Check if verbose flag is set
+	    	# Check if verbose flag is set
 		if args.verbose:
-			print("[+] Trying:\t%s\t%d\t%d" % (url, len(r.text), r.status_code))
+			print("[+] \t%s\t%d\t%d/" % (url, len(r.text), r.status_code))
 
 		if r1:
 			print("[+] %d\t%d\thttp://%s/" % (r1.status_code, len(r1.text), url))
