@@ -60,7 +60,7 @@ Open and write to output file
 """
 def write_to_output_file(file_name, url, response_size, status, data):
 	with open(output_dir + "/" + file_name + "-" + response_size + "-" + status + ".html", "w") as f:
-		f.write("# URL: " + url + "\n")
+		f.write("# URL: " + url.lower() + "\n")
 		f.write("# FILE: " + file_name + "\n")
 		f.write("# STATUS: " + status + "\n")
 		f.write("# \n\n")
@@ -163,7 +163,7 @@ def main():
 			for y in x:
 				for z in y:
 					if z.tag == "hostname":
-						host = z.attrib["name"]
+						host = z.attrib["name"].lower()
 					if z.tag == "port":
 						port = z.attrib["portid"]
 						if port == "80":
@@ -188,7 +188,7 @@ def main():
 				urls = url_file.readlines()
 				url  = [i.strip() for i in urls]
 			with Pool(thread_count) as pool:
-				results = pool.map(get_urls_basic, url)
+				results = pool.map(get_urls_basic, url.lower())
 				success = list(filter(None, results))
 		except KeyboardInterrupt:
 			print("[+] Exiting program...")
